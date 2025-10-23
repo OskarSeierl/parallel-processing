@@ -4,7 +4,6 @@
 /*
  * TODO: include openmp header file
  */ 
-#include <omp.h>
 
 // square of Euclid distance between two multi-dimensional points
 inline static double euclid_dist_2(int    numdims,  /* no. dimensions */
@@ -87,11 +86,6 @@ void kmeans(double * objects,          /* in: [numObjs][numCoords] */
         /* 
          * TODO: Detect parallelizable region and use appropriate OpenMP pragmas
          */
-        #pragma omp parallel for \
-        private(i,j,index) \
-        firstprivate(numObjs,numClusters,numCoords) \
-        shared(objects,clusters,membership,newClusters,newClusterSize) \
-        schedule(static) reduction(+:delta)
 
         for (i=0; i<numObjs; i++) {
             // find the array index of nearest cluster center 
@@ -108,13 +102,11 @@ void kmeans(double * objects,          /* in: [numObjs][numCoords] */
             /*
              * TODO: protect update on shared "newClusterSize" array
              */
-            #pragma omp atomic
             newClusterSize[index]++;
             for (j=0; j<numCoords; j++)
                 /*
                  * TODO: protect update on shared "newClusters" array
                  */
-                #pragma omp atomic
                 newClusters[index*numCoords + j] += objects[i*numCoords + j];
         }
 

@@ -16,7 +16,6 @@
 ## Start 
 ## Run make in the src folder (modify properly)
 
-module load openmp
 cd <FIX_PATH>
 export OMP_NUM_THREADS=8
 ./kmeans_seq -s <SIZE> -n <COORDS> -c <CLUSTERS> -l <LOOPS>
