@@ -5,8 +5,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>     /* read(), close() */
-// TODO: remove comment from following line
-// #include <omp.h>
+
+// DONE: remove comment from following line
+#include <omp.h>
 
 #include "kmeans.h"
 

@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "kmeans.h"
-/*
- * TODO: include openmp header file
- */ 
+
+// DONE: include openmp header file
+#include <omp.h>
 
 // square of Euclid distance between two multi-dimensional points
 inline static double euclid_dist_2(int    numdims,  /* no. dimensions */

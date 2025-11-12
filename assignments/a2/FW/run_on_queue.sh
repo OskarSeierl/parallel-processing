@@ -17,7 +17,7 @@
 ## Run make in the src folder (modify properly)
 
 module load openmp
-cd <FIX_PATH>
+cd /home/parallel/parlab48/assignments-upload/assignments/a2/FW
 export OMP_NUM_THREADS=8
 ./fw <SIZE>
 # ./fw_sr <SIZE> <BSIZE>
