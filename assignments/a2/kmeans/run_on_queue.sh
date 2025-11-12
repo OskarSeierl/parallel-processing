@@ -16,6 +16,8 @@
 ## Start 
 ## Run make in the src folder (modify properly)
 
-cd <FIX_PATH>
+cd /home/parallel/parlab48/assignments-upload/assignments/a2/kmeans
 export OMP_NUM_THREADS=8
+
+# Change according to exercise description here:
 ./kmeans_seq -s <SIZE> -n <COORDS> -c <CLUSTERS> -l <LOOPS>
