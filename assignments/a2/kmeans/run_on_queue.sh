@@ -20,4 +20,6 @@ cd /home/parallel/parlab48/assignments-upload/assignments/a2/kmeans
 export OMP_NUM_THREADS=8
 
 # Change according to exercise description here:
-./kmeans_seq -s <SIZE> -n <COORDS> -c <CLUSTERS> -l <LOOPS>
+# also changed called programm, e.g. ./kmeans_omp_naive ...
+#./kmeans_seq -s <SIZE> -n <COORDS> -c <CLUSTERS> -l <LOOPS>
+./kmeans_seq -s 256 -n 16 -c 32 -l 10
