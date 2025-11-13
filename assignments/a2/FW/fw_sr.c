@@ -11,6 +11,9 @@
 #include <sys/time.h>
 #include "util.h"
 
+// Include OpenMP
+#include <omp.h>
+
 inline int min(int a, int b);
 void FW_SR (int **A, int arow, int acol, 
             int **B, int brow, int bcol, 
@@ -78,12 +81,28 @@ void FW_SR (int **A, int arow, int acol,
 					A[arow+i][acol+j]=min(A[arow+i][acol+j], B[brow+i][bcol+k]+C[crow+k][ccol+j]);
 	else {
 		FW_SR(A,arow, acol,B,brow, bcol,C,crow, ccol, myN/2, bsize);
-		FW_SR(A,arow, acol+myN/2,B,brow, bcol,C,crow, ccol+myN/2, myN/2, bsize);
-		FW_SR(A,arow+myN/2, acol,B,brow+myN/2, bcol,C,crow, ccol, myN/2, bsize);
+		#pragma omp parallel
+		{
+			#pragma omp single
+			{
+				#pragma omp task shared (A, B, C)
+				FW_SR(A,arow, acol+myN/2,B,brow, bcol,C,crow, ccol+myN/2, myN/2, bsize);
+				FW_SR(A,arow+myN/2, acol,B,brow+myN/2, bcol,C,crow, ccol, myN/2, bsize);
+				#pragma omp taskwait
+			}
+		}
 		FW_SR(A,arow+myN/2, acol+myN/2,B,brow+myN/2, bcol,C,crow, ccol+myN/2, myN/2, bsize);
 		FW_SR(A,arow+myN/2, acol+myN/2,B,brow+myN/2, bcol+myN/2,C,crow+myN/2, ccol+myN/2, myN/2, bsize);
-		FW_SR(A,arow+myN/2, acol,B,brow+myN/2, bcol+myN/2,C,crow+myN/2, ccol, myN/2, bsize);
-		FW_SR(A,arow, acol+myN/2,B,brow, bcol+myN/2,C,crow+myN/2, ccol+myN/2, myN/2, bsize);
+		#pragma omp parallel
+		{
+			#pragma omp single
+			{
+				#pragma omp task shared(A, B, C)
+				FW_SR(A,arow+myN/2, acol,B,brow+myN/2, bcol+myN/2,C,crow+myN/2, ccol, myN/2, bsize);
+				FW_SR(A,arow, acol+myN/2,B,brow, bcol+myN/2,C,crow+myN/2, ccol+myN/2, myN/2, bsize);
+				#pragma omp taskwait
+			}
+		}
 		FW_SR(A,arow, acol,B,brow, bcol+myN/2,C,crow+myN/2, ccol, myN/2, bsize);
 	}
 }

@@ -3,7 +3,7 @@
 all: fw fw_sr fw_tiled 
 
 CC=gcc
-CFLAGS= -Wall -O3 -Wno-unused-variable
+CFLAGS= -Wall -O3 -Wno-unused-variable -fopenmp
 
 HDEPS+=%.h
 
