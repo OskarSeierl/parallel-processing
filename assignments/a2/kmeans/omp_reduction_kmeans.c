@@ -98,38 +98,53 @@ void kmeans(double * objects,          /* in: [numObjs][numCoords] */
 
         delta = 0.0;
 
-        /* 
-         * TODO: Initiliaze local cluster data to zero (separate for each thread)
-         */
-        
-        for (i=0; i<numObjs; i++)
-        {
-            // find the array index of nearest cluster center 
-            index = find_nearest_cluster(numClusters, numCoords, &objects[i*numCoords], clusters);
-            
-            // if membership changes, increase delta by 1 
-            if (membership[i] != index)
-                delta += 1.0;
-            
-            // assign the membership to object i 
-            membership[i] = index;
-            
-            // update new cluster centers : sum of all objects located within (average will be performed later) 
-            /* 
-             * TODO: Collect cluster data in local arrays (local to each thread)
-             *       Replace global arrays with local per-thread
-             */
-            newClusterSize[index]++;
-            for (j=0; j<numCoords; j++)
-                newClusters[index*numCoords + j] += objects[i*numCoords + j];
 
+        #pragma omp parallel private(i, j, index) reduction(+:delta)
+        {
+            // Get thread number [0, nthreads)
+            int tid = omp_get_thread_num();
+
+            // DONE: Initiliaze local cluster data to zero (separate for each thread)
+            for (i = 0; i < numClusters; i++) {
+                local_newClusterSize[tid][i] = 0;
+                for (j = 0; j < numCoords; j++)
+                    local_newClusters[tid][i * numCoords + j] = 0.0;
+            }
+
+            #pragma omp for
+            for (i=0; i<numObjs; i++)
+            {
+                // find the array index of nearest cluster center
+                index = find_nearest_cluster(numClusters, numCoords, &objects[i*numCoords], clusters);
+
+                // if membership changes, increase delta by 1
+                if (membership[i] != index)
+                    delta += 1.0;
+
+                // assign the membership to object i
+                membership[i] = index;
+
+                // update new cluster centers : sum of all objects located within (average will be performed later)
+
+                // DONE: Collect cluster data in local arrays (local to each thread).
+                // Replace global arrays with local per-thread
+                local_newClusterSize[tid][index]++;
+                for (j=0; j<numCoords; j++)
+                    local_newClusters[tid][index*numCoords + j] += objects[i*numCoords + j];
+
+            }
         }
 
-        /*
-         * TODO: Reduction of cluster data from local arrays to shared.
-         *       This operation will be performed by one thread
-         */
 
+        // DONE: Reduction of cluster data from local arrays to shared.
+        // This operation will be performed by one thread
+        for (k = 0; k < nthreads; k++) {
+            for (i = 0; i < numClusters; i++) {
+                newClusterSize[i] += local_newClusterSize[k][i];
+                for (j = 0; j < numCoords; j++)
+                    newClusters[i * numCoords + j] += local_newClusters[k][i * numCoords + j];
+            }
+        }
 
         // average the sum and replace old cluster centers with newClusters 
         for (i=0; i<numClusters; i++) {
