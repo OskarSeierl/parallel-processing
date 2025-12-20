@@ -43,7 +43,13 @@ int main(int argc, char **argv)
 	graph_init_random(A,-1,N,128*N);
 
 	gettimeofday(&t1,0);
-	FW_SR(A,0,0, A,0,0,A,0,0,N,B);
+	#pragma omp parallel
+	{
+		#pragma omp single
+		{
+			FW_SR(A,0,0,A,0,0,A,0,0,N,B);
+		}
+	}
 	gettimeofday(&t2,0);
 
 	time=(double)((t2.tv_sec-t1.tv_sec)*1000000+t2.tv_usec-t1.tv_usec)/1000000;
