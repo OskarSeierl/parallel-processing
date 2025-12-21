@@ -35,7 +35,7 @@ progs=(
 	kmeans_cuda_naive
 	kmeans_cuda_transpose
 	kmeans_cuda_shared
-#	kmeans_cuda_all_gpu
+  kmeans_cuda_all_gpu
 #	kmeans_cuda_all_gpu_delta_reduction
 )
 
