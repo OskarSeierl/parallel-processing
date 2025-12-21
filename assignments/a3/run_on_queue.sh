@@ -1,44 +1,41 @@
 #!/bin/bash
 
 ## Give the Job a descriptive name
-#PBS -N run_kmeans
+#PBS -N run_kmeans_oskar
 
 ## Output and error files
 #PBS -o run_kmeans.out
 #PBS -e run_kmeans.err
 
-## How many machines should we get? 
-#PBS -l nodes=1:ppn=8
-
 ##How long should the job run for?
-#PBS -l walltime=00:10:00
+#PBS -l walltime=00:30:00
 
 ## Start 
 ## Run make in the src folder (modify properly)
 
-cd <FIX_PATH>
+cd /home/parallel/parlab48/assignments-upload/assignments/a3
 export CUDA_VISIBLE_DEVICES=2
 # sizes='32 64 128 256 512 1024 2048'
-sizes='256'
+sizes='1024'
 
 #coordinates='4'
-coordinates='16'
+coordinates='32'
 
 #centers='64'
-centers='16'
+centers='64'
 
 loop_threashold='10'
 # loop_threashold='100''
 
-block_size='32 64 128 256 512 1024'
+block_size='32 48 64 128 238 512 1024'
 
 progs=(
-	kmeans_seq
-	kmeans_cuda_naive
+#	kmeans_seq
+#	kmeans_cuda_naive
 	kmeans_cuda_transpose
-	kmeans_cuda_shared
-	kmeans_cuda_all_gpu
-	kmeans_cuda_all_gpu_delta_reduction
+#	kmeans_cuda_shared
+#	kmeans_cuda_all_gpu
+#	kmeans_cuda_all_gpu_delta_reduction
 )
 
 for size in $sizes; do

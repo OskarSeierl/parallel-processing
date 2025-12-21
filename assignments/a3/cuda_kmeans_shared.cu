@@ -259,7 +259,7 @@ void kmeans_gpu(double *objects,      /* in: [numObjs][numCoords] */
          1000 * cpu_time / loop, 1000 * gpu_time / loop, 1000 * transfers_time / loop);
 
   char outfile_name[1024] = {0};
-  sprintf(outfile_name, "Execution_logs/silver1-V100_Sz-%lu_Coo-%d_Cl-%d.csv",
+  sprintf(outfile_name, "Execution_logs/Sz-%lu_Coo-%d_Cl-%d.csv",
           numObjs * numCoords * sizeof(double) / (1024 * 1024), numCoords, numClusters);
   FILE *fp = fopen(outfile_name, "a+");
   if (!fp) error("Filename %s did not open succesfully, no logging performed\n", outfile_name);
