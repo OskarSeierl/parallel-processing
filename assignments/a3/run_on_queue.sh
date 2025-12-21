@@ -28,12 +28,13 @@ loop_threashold='10'
 # loop_threashold='100''
 
 block_size='32 48 64 128 238 512 1024'
+#block_size='64'
 
 progs=(
-#	kmeans_seq
-#	kmeans_cuda_naive
+	kmeans_seq
+	kmeans_cuda_naive
 	kmeans_cuda_transpose
-#	kmeans_cuda_shared
+	kmeans_cuda_shared
 #	kmeans_cuda_all_gpu
 #	kmeans_cuda_all_gpu_delta_reduction
 )
@@ -42,7 +43,7 @@ for size in $sizes; do
 	for coord in $coordinates; do
 		for center in $centers; do
 			filename=Execution_logs/Sz-${size}_Coo-${coord}_Cl-${center}.csv 
-			echo "Implementation,blockSize,av_loop_t,min_loop_t,max_loop_t" >> $filename
+			echo "Implementation,blockSize,av_loop_t,min_loop_t,max_loop_t,t_cpu_avg,t_gpu_avg,t_transfers_avg" >> $filename
 			for prog in "${progs[@]}"; do
 				if [[ $prog == 'kmeans_seq' ]]; then
 					./${prog} -s $size -n $coord -c $center -l $loop_threashold

@@ -286,7 +286,18 @@ void kmeans_gpu(double *objects,      /* in: [numObjs][numCoords] */
           numObjs * numCoords * sizeof(double) / (1024 * 1024), numCoords, numClusters);
   FILE *fp = fopen(outfile_name, "a+");
   if (!fp) error("Filename %s did not open succesfully, no logging performed\n", outfile_name);
-  fprintf(fp, "%s,%d,%lf,%lf,%lf\n", "Transpose", blockSize, timing / loop, timer_min, timer_max);
+  fprintf(
+    fp,
+    "%s,%d,%lf,%lf,%lf,%lf,%lf,%lf\n",
+    "Transpose",
+    blockSize,
+    timing / loop,
+    timer_min,
+    timer_max,
+    cpu_time / loop,
+    gpu_time / loop,
+    transfers_time / loop
+  );
   fclose(fp);
 
   checkCuda(cudaFree(deviceObjects));
