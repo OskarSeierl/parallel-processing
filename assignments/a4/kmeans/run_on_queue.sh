@@ -1,40 +1,19 @@
 #!/bin/bash
 
-## Give the Job a descriptive name
 #PBS -N run_kmeans_oskar
-
-## Output and error files
 #PBS -o run_kmeans.out
 #PBS -e run_kmeans.err
-
-##How long should the job run for?
 #PBS -l walltime=00:30:00
+#PBS -l nodes=8:ppn=8
 
 ## Start 
 ## Run make in the src folder (modify properly)
-
+module load openmpi/1.8.3
 cd /home/parallel/parlab48/assignments-upload/assignments/a4/kmeans
 
-sizes='256'
-coordinates='16'
-centers='32'
-loop_threashold='10'
 mpis='1 2 4 8 16 32 64'
 
-progs=(
-	kmeans
-)
-
-for size in $sizes; do
-	for coord in $coordinates; do
-		for center in $centers; do
-			filename=Execution_logs/Sz-${size}_Coo-${coord}_Cl-${center}.csv 
-			echo "Implementation,blockSize,av_loop_t,min_loop_t,max_loop_t,t_cpu_avg,t_gpu_avg,t_transfers_avg" >> $filename
-			for prog in "${progs[@]}"; do
-				for bs in $mpis; do
-				  ./${prog} -s $size -n $coord -c $center -l $loop_threashold
-				done
-			done
-		done
-	done
+for p in $mpis; do
+  echo "Running with ${p} MPI processes" >> results/mpi_${p}.out
+  mpirun -np $p --mca btl self,tcp ./kmeans_mpi -s 256 -n 16 -c 32 -l 10 >> results/mpi_${p}.out
 done

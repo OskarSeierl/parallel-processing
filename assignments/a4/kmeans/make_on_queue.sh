@@ -16,5 +16,6 @@
 ## Start 
 ## Run make in the src folder (modify properly)
 
+module load openmpi/1.8.3
 cd /home/parallel/parlab48/assignments-upload/assignments/a4/kmeans/
 make

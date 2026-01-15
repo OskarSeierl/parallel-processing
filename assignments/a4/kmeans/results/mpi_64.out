@@ -1,0 +1,3 @@
+Running with 64 MPI processes
+dataset_size = 256.00 MB    numObjs = 2097152    numCoords = 16    numClusters = 32
+        nloops =  10   (total =  0.4641s)  (per loop =  0.0464s)

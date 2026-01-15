@@ -22,10 +22,11 @@ double * dataset_generation(int numObjs, int numCoords, long *rank_numObjs)
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
     /*
-     * TODO: Calculate number of objects that each rank will examine (*rank_numObjs)
+     * DONE: Calculate number of objects that each rank will examine (*rank_numObjs)
      */
-    
-
+    *rank_numObjs = numObjs / size;
+    if (rank < numObjs % size)
+        (*rank_numObjs)++;
 
 
     /* allocate space for objects[][] and read all objects */
@@ -34,23 +35,26 @@ double * dataset_generation(int numObjs, int numCoords, long *rank_numObjs)
         objects = (typeof(objects)) malloc(numObjs * numCoords * sizeof(*objects));
 
         /*
-         * TODO: Calculate sendcounts and displs, which will be used to scatter data to each rank.
+         * DONE: Calculate sendcounts and displs, which will be used to scatter data to each rank.
          * Hint: sendcounts: number of elements sent to each rank
          *       displs: displacement of each rank's data
          */
+        int offset = 0;
+        for (i = 0; i < size; i++) {
+            sendcounts[i] = (numObjs / size) * numCoords;
+            if (i < numObjs % size)
+                sendcounts[i] += numCoords;
 
-
-
-
-
-
-
+            displs[i] = offset;
+            offset += sendcounts[i];
+        }
     }
 
     /* 
-     * TODO: Broadcast the sendcounts and displs arrays to other ranks
+     * DONE: Broadcast the sendcounts and displs arrays to other ranks
      */
-
+    MPI_Bcast(sendcounts, size, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(displs, size, MPI_INT, 0, MPI_COMM_WORLD);
 
 
     /* allocate space for objects[][] (for each rank separately) and read all objects */
@@ -71,8 +75,11 @@ double * dataset_generation(int numObjs, int numCoords, long *rank_numObjs)
     }
 
     /*
-     * TODO: Scatter objects to every rank. (hint: each rank may receive different number of objects)
+     * DONE: Scatter objects to every rank. (hint: each rank may receive different number of objects)
      */
+    MPI_Scatterv(objects, sendcounts, displs, MPI_DOUBLE,
+                 rank_objects, (*rank_numObjs) * numCoords, MPI_DOUBLE,
+                 0, MPI_COMM_WORLD);
 
 
     if (rank == 0)

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Give the Job a descriptive name
-#PBS -N makejob
+#PBS -N serial_heat_make_oskar
 
 ## Output and error files
 #PBS -o outmakejob
@@ -14,5 +14,5 @@
 
 ## Start 
 ## Run make in the src folder (modify properly)
-cd <FIX PATH>
+cd /home/parallel/parlab48/assignments-upload/assignments/a4/heat_transfer/serial/
 make
