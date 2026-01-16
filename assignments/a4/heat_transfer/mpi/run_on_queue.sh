@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #PBS -N run_jacobi_oskar
-#PBS -o run_jacobi.out
+#PBS -o run_jacobi_convergence.out
 #PBS -e run_jacobi.err
 #PBS -l walltime=00:30:00
 #PBS -l nodes=8:ppn=8
